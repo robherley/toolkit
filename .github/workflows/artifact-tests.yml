@@ -169,11 +169,18 @@ jobs:
             'my-artifact-macos-latest'
           ]
 
-          const listResult = await artifactClient.listArtifacts({latest: true})
-          console.log(listResult)
-
           for (const artifactName of artifactsToDelete) {
-            console.log("Deleting artifact:", artifactName)
             const {id} = await artifactClient.deleteArtifact(artifactName)
-            console.log('Deleted artifact:', id)
+          }
+
+          const {artifacts} = await artifactClient.listArtifacts({latest: true})
+          const foundArtifacts = artifacts.filter(artifact =>
+            artifactsToDelete.includes(artifact.name)
+          )
+
+          if (foundArtifacts.length !== 0) {
+            console.log('Unexpected length of found artifacts:', foundArtifacts)
+            throw new Error(
+              `Expected 0 artifacts but found ${foundArtifacts.length} artifacts.`
+            )
           }
