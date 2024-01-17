@@ -164,3 +164,22 @@ jobs:
               }
             }
           }
+    - name: Delete Artifacts
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const {default: artifactClient} = require('./packages/artifact/lib/artifact')
+
+          const artifactsToDelete = [
+            'my-artifact-ubuntu-latest',
+            'my-artifact-windows-latest',
+            'my-artifact-macos-latest'
+          ]
+
+          for (const artifactName of artifactsToDelete) {
+            const {id} = await artifactClient.deleteArtifact(artifactName)
+            console.log('Deleted artifact:', id)
+          }
+
+          const listResult = await artifactClient.listArtifacts({latest: true})
+          console.log(listResult)
