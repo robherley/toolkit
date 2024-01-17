@@ -188,10 +188,11 @@ jobs:
             'my-artifact-macos-latest'
           ]
 
+          const listResult = await artifactClient.listArtifacts({latest: true})
+          console.log(listResult)
+
           for (const artifactName of artifactsToDelete) {
+            console.log("Deleting artifact:", artifactName)
             const {id} = await artifactClient.deleteArtifact(artifactName)
             console.log('Deleted artifact:', id)
           }
-
-          const listResult = await artifactClient.listArtifacts({latest: true})
-          console.log(listResult)
